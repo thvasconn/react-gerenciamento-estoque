@@ -1,0 +1,60 @@
+@media (max-width: 992px) {
+    .stats-container {
+        flex-direction: column;
+    }
+
+    .stat-card {
+        width: 100%;
+    }
+
+    .filters-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-group,
+    .filters-group {
+        width: 100%;
+    }
+
+    .add-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .products-table {
+        display: none;
+    }
+
+    .cards-container {
+        display: flex;
+    }
+
+    .filters-group {
+        flex-direction: column;
+    }
+
+    .dropdown,
+    .date-input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+}
