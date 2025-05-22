@@ -40,7 +40,7 @@ function ProductForm({ onClose, setData, data }) {
                 productId: response.data._id,
                 type: 'entrada',
                 quantity: currentQuantity,
-                date: new Date().toISOString
+                date: new Date().toISOString()
             });
 
             if (setData && data) {

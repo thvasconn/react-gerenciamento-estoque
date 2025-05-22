@@ -14,10 +14,16 @@ function Home() {
   const [error, setError] = useState(null);
   const [movements, setMovements] = useState({});
   const [search, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
   const [stats, setStats] = useState({
     recentEntries: 0,
     recentExits: 0,
   });
+
+  const handleCategoryChange = (e) => {
+    const category = e.target.value;
+    setCategoryFilter(category);
+  }
 
   const getProductsAndStats = async () => {
     try {
@@ -30,29 +36,25 @@ function Home() {
           endDate: new Date().toISOString(),
         }
       });
-      const recentMovements = movementsResponse.data;
+      
+      const validMovements = movementsResponse.data.filter(m => m.type === 'entrada' || m.type === 'saída');
 
-      const entries = recentMovements.filter(m => m.type === 'entrada').length;
-      const exits = recentMovements.filter(m => m.type === 'saída').length;
+      const entries = validMovements.filter(m => m.type === 'entrada').length;
+      const exits = validMovements.filter(m => m.type === 'saída').length;
 
-      setMovements(recentMovements);
+      console.log(validMovements);
+      console.log("Entradas: ", entries);
+      console.log("Saídas: ", exits);
+
+      setMovements(validMovements);
       setStats({
         recentEntries: entries,
         recentExits: exits
+
+      
       });
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
-    }
-  };
-
-
-
-  const getProducts = async () => {
-    try {
-      const response = await api.get('/products');
-      setProducts(response.data);
-    } catch (error) {
-      console.error('Erro ao buscar produtos:', error); 
     }
   };
 
@@ -84,7 +86,7 @@ function Home() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, categoryFilter]);
 
   const handleOpenForm = () => {
     setIsFormOpen(true);
@@ -92,7 +94,7 @@ function Home() {
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
-    getProducts();
+    getProductsAndStats();
   };
 
   async function handleDelete(id) {
@@ -106,7 +108,9 @@ function Home() {
         type: 'saída',
         quantity: products.find(product => product._id === id).quantity,
         date: new Date().toISOString()
+        
       });
+      getProductsAndStats();
     } catch (error) {
       console.error('Erro ao deletar produto:', error);
     }
@@ -119,6 +123,9 @@ function Home() {
       const params = {};
       if (search) {
         params.search = search
+      }
+      if (categoryFilter) {
+        params.category = categoryFilter;
       }
 
       const response = await api.get('/products', { params });
@@ -159,7 +166,7 @@ function Home() {
       <div className="filters-container">
         <input type="text" placeholder="Pesquisar..." className="search-input" onChange={handleSearch} />
         <div className="dropdown">
-          <select name="category" id="category" defaultValue="">
+          <select name="category" id="category" value={categoryFilter} onChange={handleCategoryChange}>
             <option value="">Categoria</option>
             <option value="Alimentos">Alimentos</option>
             <option value="Bebidas">Bebidas</option>
